@@ -1,0 +1,31 @@
+services:
+  users:
+    image: stoplight/prism:4
+    # env_file: 'var.env'
+    ports:
+      - '14010:4010'
+    command: ['mock', '-h', '0.0.0.0', 'https://raw.githubusercontent.com/friendpost-july/user-spec/main/user_spec.yml']
+
+  postgres:
+    image: postgres:12
+    # env_file: 'var.env'
+    environment:
+      POSTGRES_DB: Friends_DB
+      POSTGRES_USER: sa
+      POSTGRES_PASSWORD: qwerty123
+    ports:
+      - '15432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4:8.9
+    # env_file: 'var.env'
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.net
+      PGADMIN_DEFAULT_PASSWORD: password
+    ports:
+      - '8000:80'
+
+volumes:
+  postgres_data:
