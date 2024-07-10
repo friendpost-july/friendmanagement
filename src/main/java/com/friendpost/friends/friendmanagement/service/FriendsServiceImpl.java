@@ -18,21 +18,21 @@ public class FriendsServiceImpl implements FriendsService{
     FriendsRepository friendsRepository;
 
     @Override
-    public void sendFriendRequest(Friends friends) {
-        if (friends.getRequester() == null || friends.getTarget() == null) {
+    public Friends sendFriendRequest(Friends friends) {
+        if (friends.getSenderId() == null || friends.getReceiverId() == null) {
             throw new IllegalArgumentException("Sender ID and Receiver ID must not be null");
         }
         friends.setStatus(Friends.Status.PENDING);
-        friendsRepository.save(friends);
+        return friendsRepository.save(friends);
     }
 
     @Override
     public List<Friends> getReceivedFriendRequests(String userId, Friends.Status status) {
-        return friendsRepository.findByTargetAndStatus(userId,status);
+        return friendsRepository.findByReceiverIdAndStatus(userId,status);
     }
 
     @Transactional
-    public void updateFriendRequestStatus(String requestId, Friends.Status status) {
+    public Friends updateFriendRequestStatus(String requestId, Friends.Status status) {
         Optional<Friends> friendRequestOptional = friendsRepository.findById(Long.valueOf(requestId));
         if (!friendRequestOptional.isPresent()) {
             throw new FriendRequestNotFoundException("Friend request not found");
@@ -44,21 +44,21 @@ public class FriendsServiceImpl implements FriendsService{
             throw new InvalidStatusException("Invalid status value");
         }
         friends.setStatus(status);
-        friendsRepository.save(friends);
+        return friendsRepository.save(friends);
     }
 
     @Override
     public List<Friends> getFriends(String userId) {
-        return friendsRepository.findByRequesterOrTargetAndStatus(userId,userId,Friends.Status.ACCEPTED);
+        return friendsRepository.findBySenderIdOrReceiverIdAndStatus(userId,userId,Friends.Status.ACCEPTED);
     }
     @Transactional
     public void unfriend(String userId, String friendId) {
-        if (friendsRepository.findByRequesterAndTarget(userId, friendId).isPresent()) {
+        if (friendsRepository.findBySenderIdAndReceiverId(userId, friendId).isPresent()) {
 
-            friendsRepository.deleteByRequesterAndTarget(userId, friendId);
+            friendsRepository.deleteBySenderIdAndReceiverId(userId, friendId);
         }
-        else if (friendsRepository.findByRequesterAndTarget(friendId,userId).isPresent()) {
-            friendsRepository.deleteByRequesterAndTarget(friendId, userId);
+        else if (friendsRepository.findBySenderIdAndReceiverId(friendId,userId).isPresent()) {
+            friendsRepository.deleteBySenderIdAndReceiverId(friendId, userId);
         }else {
             throw new FriendRequestNotFoundException("Friend not found");
         }

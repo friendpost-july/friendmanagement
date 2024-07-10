@@ -9,9 +9,9 @@ public class Friends {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long requestId;
 
-    private String requester;
+    private String senderId;
 
-    private String target;
+    private String receiverId;
 
     @Enumerated(EnumType.STRING)
     private Status status;
@@ -25,9 +25,9 @@ public class Friends {
     // Constructors, getters, and setters
     public Friends() {}
 
-    public Friends(String requester, String target, Status status) {
-        this.requester = requester;
-        this.target = target;
+    public Friends(String senderId, String receiverId, Status status) {
+        this.senderId = senderId;
+        this.receiverId = receiverId;
         this.status = status;
     }
 
@@ -39,20 +39,20 @@ public class Friends {
         this.requestId = requestId;
     }
 
-    public String getRequester() {
-        return requester;
+    public String getSenderId() {
+        return senderId;
     }
 
-    public void setRequester(String requester) {
-        this.requester = requester;
+    public void setSenderId(String senderId) {
+        this.senderId = senderId;
     }
 
-    public String getTarget() {
-        return target;
+    public String getReceiverId() {
+        return receiverId;
     }
 
-    public void setTarget(String target) {
-        this.target = target;
+    public void setReceiverId(String receiverId) {
+        this.receiverId = receiverId;
     }
 
     public Status getStatus() {

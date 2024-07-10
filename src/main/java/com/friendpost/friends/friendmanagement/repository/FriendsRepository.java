@@ -8,12 +8,13 @@ import java.util.List;
 import java.util.Optional;
 @Component
 public interface FriendsRepository extends JpaRepository<Friends, Long> {
-    List<Friends> findByTargetAndStatus(String userId, Friends.Status status);
+    Friends save(Friends friends);
+    List<Friends> findByReceiverIdAndStatus(String userId, Friends.Status status);
 
-    List<Friends> findByRequesterOrTargetAndStatus(String userId, String id, Friends.Status status);
+    List<Friends> findBySenderIdOrReceiverIdAndStatus(String userId, String id, Friends.Status status);
 
 
-    Optional<Friends> findByRequesterAndTarget(String userId, String friendId);
+    Optional<Friends> findBySenderIdAndReceiverId(String userId, String friendId);
 
-    long deleteByRequesterAndTarget(String userId, String friendId);
+    long deleteBySenderIdAndReceiverId(String userId, String friendId);
 }

@@ -5,11 +5,11 @@ import com.friendpost.friends.friendmanagement.entity.Friends;
 import java.util.List;
 
 public interface FriendsService {
-    void sendFriendRequest(Friends friends);
+    Friends sendFriendRequest(Friends friends);
 
     List<Friends> getReceivedFriendRequests(String userId, Friends.Status status);
 
-    void updateFriendRequestStatus(String requestId, Friends.Status status);
+    Friends updateFriendRequestStatus(String requestId, Friends.Status status);
 
     List<Friends> getFriends(String userId);
 

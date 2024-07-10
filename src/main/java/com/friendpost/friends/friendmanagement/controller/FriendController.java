@@ -22,23 +22,23 @@ public class FriendController {
     @Autowired
     private FriendsService friendRequestService;
 
-    @GetMapping("/requests")
-    public ResponseEntity<List<Friends>> getReceivedFriendRequests(@RequestParam String userId) {
+    @GetMapping("/requests/{userId}")
+    public ResponseEntity<List<Friends>> getReceivedFriendRequests(@PathVariable String userId) {
         List<Friends> friends = friendRequestService.getReceivedFriendRequests(userId, Friends.Status.PENDING);
         return ResponseEntity.ok(friends);
     }
     @PostMapping
-    public ResponseEntity<String> sendFriendRequest( @RequestBody @Validated Friends friendsDto) {
+    public ResponseEntity<Object> sendFriendRequest( @RequestBody @Validated Friends friendsDto) {
         try {
-            friendRequestService.sendFriendRequest(friendsDto);
-            return new ResponseEntity<>("Friend request sent successfully", HttpStatus.CREATED);
+            Friends friends=friendRequestService.sendFriendRequest(friendsDto);
+            return new ResponseEntity<>(friends,HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>("Invalid input data", HttpStatus.BAD_REQUEST);
         }
     }
 
-    @PutMapping("/{requestId}")
-    public ResponseEntity<String> updateFriendRequestStatus(
+    @PatchMapping("/{requestId}")
+    public ResponseEntity<Object> updateFriendRequestStatus(
             @PathVariable String requestId,
             @RequestBody Map<String, String> requestBody) {
         String status = requestBody.get("status");
@@ -46,8 +46,8 @@ public class FriendController {
             return new ResponseEntity<>("Invalid status value", HttpStatus.BAD_REQUEST);
         }
         try {
-            friendRequestService.updateFriendRequestStatus(requestId, status.equals("accepted")? Friends.Status.ACCEPTED : Friends.Status.REJECTED);
-            return new ResponseEntity<>("Friend request updated successfully", HttpStatus.OK);
+            Friends friends=friendRequestService.updateFriendRequestStatus(requestId, status.equals("accepted")? Friends.Status.ACCEPTED : Friends.Status.REJECTED);
+            return new ResponseEntity<>(friends, HttpStatus.OK);
         } catch (FriendRequestNotFoundException e) {
             return new ResponseEntity<>("Friend request not found", HttpStatus.NOT_FOUND);
         } catch (InvalidStatusException e) {
@@ -56,15 +56,15 @@ public class FriendController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Friends>> getFriends(@RequestParam String userId) {
+    public ResponseEntity<List<Friends>> getFriends(@PathVariable String userId) {
         List<Friends> friends = friendRequestService.getFriends(userId);
         return ResponseEntity.ok(friends);
     }
 
-    @DeleteMapping("/{userId}/unfriend/{friendId}")
+    @DeleteMapping("/{userId}")
     public ResponseEntity<String> unfriend(
             @PathVariable String userId,
-            @PathVariable String friendId) {
+            @RequestParam String friendId) {
         try {
             friendRequestService.unfriend(userId, friendId);
             return new ResponseEntity<>("Unfriended successfully", HttpStatus.OK);
@@ -76,11 +76,4 @@ public class FriendController {
     public String hello(@PathVariable String Username) {
         return "Hello, " + Username;
     }
-
-    // Add a new endpoint which displays date and time to the user
-    @GetMapping("/date")
-    public String date() {
-        return java.time.LocalDateTime.now().toString();
-    }
-
 }
