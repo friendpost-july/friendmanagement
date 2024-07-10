@@ -55,7 +55,7 @@ public class FriendController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/{userId}")
     public ResponseEntity<List<Friends>> getFriends(@PathVariable String userId) {
         List<Friends> friends = friendRequestService.getFriends(userId);
         return ResponseEntity.ok(friends);
