@@ -1,4 +1,17 @@
 package com.friendpost.friends.friendmanagement.service;
 
+import com.friendpost.friends.friendmanagement.entity.Friends;
+
+import java.util.List;
+
 public interface FriendsService {
+    void sendFriendRequest(Friends friends);
+
+    List<Friends> getReceivedFriendRequests(String userId, Friends.Status status);
+
+    void updateFriendRequestStatus(String requestId, Friends.Status status);
+
+    List<Friends> getFriends(String userId);
+
+    void unfriend(String userId, String friendId);
 }

@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 
 @Entity
-public class FriendRequest {
+public class Friends {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long requestId;
@@ -23,9 +23,9 @@ public class FriendRequest {
     }
 
     // Constructors, getters, and setters
-    public FriendRequest() {}
+    public Friends() {}
 
-    public FriendRequest(String requester, String target, Status status) {
+    public Friends(String requester, String target, Status status) {
         this.requester = requester;
         this.target = target;
         this.status = status;
