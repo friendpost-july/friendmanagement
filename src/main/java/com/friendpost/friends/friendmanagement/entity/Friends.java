@@ -11,11 +11,44 @@ public class Friends {
 
     private String senderId;
 
+    private String sendername;
+
     private String receiverId;
+    private String receivername;
+    public String getSendername() {
+        return sendername;
+    }
+
+    public void setSendername(String sendername) {
+        this.sendername = sendername;
+    }
+
+    public String getReceivername() {
+        return receivername;
+    }
+
+    public void setReceivername(String receivername) {
+        this.receivername = receivername;
+    }
+
+    public Userstatus getUserstatus() {
+        return userstatus;
+    }
+
+    public void setUserstatus(Userstatus userstatus) {
+        this.userstatus = userstatus;
+    }
 
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    @Enumerated(EnumType.STRING)
+    private Userstatus userstatus;
+
+    public enum Userstatus {
+        VERIFIED,
+        ONHOLD
+    }
     public enum Status {
         PENDING,
         ACCEPTED,

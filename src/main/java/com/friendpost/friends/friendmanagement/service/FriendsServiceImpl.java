@@ -3,7 +3,10 @@ package com.friendpost.friends.friendmanagement.service;
 import com.friendpost.friends.friendmanagement.controller.exception.FriendRequestNotFoundException;
 import com.friendpost.friends.friendmanagement.controller.exception.InvalidStatusException;
 import com.friendpost.friends.friendmanagement.entity.Friends;
+import com.friendpost.friends.friendmanagement.entity.Friends.Userstatus;
 import com.friendpost.friends.friendmanagement.repository.FriendsRepository;
+import com.friendpost.friends.friendmanagement.repository.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,10 +20,19 @@ public class FriendsServiceImpl implements FriendsService{
     @Autowired
     FriendsRepository friendsRepository;
 
+    @Autowired
+    UserRepository userRepository;
+
     @Override
     public Friends sendFriendRequest(Friends friends) {
         if (friends.getSenderId() == null || friends.getReceiverId() == null) {
             throw new IllegalArgumentException("Sender ID and Receiver ID must not be null");
+        }
+        if(userRepository.existsByUserId(friends.getReceiverId())) {
+            friends.setUserstatus(Userstatus.VERIFIED);
+        }
+        else {
+            friends.setUserstatus(Userstatus.ONHOLD);
         }
         friends.setStatus(Friends.Status.PENDING);
         return friendsRepository.save(friends);
@@ -49,7 +61,7 @@ public class FriendsServiceImpl implements FriendsService{
 
     @Override
     public List<Friends> getFriends(String userId) {
-        return friendsRepository.findBySenderIdOrReceiverIdAndStatus(userId,userId,Friends.Status.ACCEPTED);
+        return friendsRepository.findBySenderIdAndStatusOrReceiverIdAndStatus(userId,Friends.Status.ACCEPTED.name());
     }
     @Transactional
     public void unfriend(String userId, String friendId) {

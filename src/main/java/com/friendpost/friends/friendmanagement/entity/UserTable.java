@@ -7,22 +7,22 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-public class Friendship {
+public class UserTable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String userId1;
-    private String userId2;
+    private String userId;
+    private String username;
 
     // Constructors
-    public Friendship() {
+    public UserTable() {
     }
 
-    public Friendship(String userId1, String userId2) {
-        this.userId1 = userId1;
-        this.userId2 = userId2;
+    public UserTable(String userId, String username) {
+        this.userId = userId;
+        this.username = username;
     }
 
     // Getters and Setters
@@ -34,19 +34,19 @@ public class Friendship {
         this.id = id;
     }
 
-    public String getUserId1() {
-        return userId1;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUserId1(String userId1) {
-        this.userId1 = userId1;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public String getUserId2() {
-        return userId2;
+    public String getusername() {
+        return username;
     }
 
-    public void setUserId2(String userId2) {
-        this.userId2 = userId2;
+    public void setusername(String username) {
+        this.username = username;
     }
 }
