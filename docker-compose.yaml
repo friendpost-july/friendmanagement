@@ -31,9 +31,12 @@ services:
     image: friendsdev:0.0.1
     depends_on:
       - postgres
+      - rabbitmq
     environment:
         DB_HOSTNAME: postgres
         DB_PORT: 5432
+        MQ_HOSTNAME: rabbitmq
+        MQ_PORT: 5672
     ports:
       - '9090:19090'
   rabbitmq:
