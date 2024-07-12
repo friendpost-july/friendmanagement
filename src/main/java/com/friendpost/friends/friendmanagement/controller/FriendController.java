@@ -4,6 +4,7 @@ import com.friendpost.friends.friendmanagement.controller.exception.FriendReques
 import com.friendpost.friends.friendmanagement.controller.exception.InvalidStatusException;
 import com.friendpost.friends.friendmanagement.entity.Friends;
 import com.friendpost.friends.friendmanagement.service.FriendsService;
+import com.friendpost.friends.friendmanagement.service.RabbitMQPublisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,12 +23,22 @@ public class FriendController {
     @Autowired
     private FriendsService friendRequestService;
 
-    @GetMapping("/requests/{userId}")
+   /* @Autowired
+    private RabbitMQPublisher rabbitMQPublisher;*/
+
+    @GetMapping("/requestorfriendrequests/{userId}")
     public ResponseEntity<List<Friends>> getReceivedFriendRequests(@PathVariable String userId) {
         List<Friends> friends = friendRequestService.getReceivedFriendRequests(userId, Friends.Status.PENDING);
         return ResponseEntity.ok(friends);
     }
-    @PostMapping
+
+    @GetMapping("/senderfriendrequests/{userId}")
+    public ResponseEntity<List<Friends>> getSentFriendRequests(@PathVariable String userId) {
+        List<Friends> friends = friendRequestService.getSentFriendRequests(userId, Friends.Status.PENDING);
+        return ResponseEntity.ok(friends);
+    }
+
+    @PostMapping("/friendrequests")
     public ResponseEntity<Object> sendFriendRequest( @RequestBody @Validated Friends friendsDto) {
         try {
             Friends friends=friendRequestService.sendFriendRequest(friendsDto);
@@ -73,7 +84,9 @@ public class FriendController {
         }
     }
     @GetMapping("/hello/{Username}")
-    public String hello(@PathVariable String Username) {
-        return "Hello, " + Username;
+    public String hello(@PathVariable String Username, @RequestParam String message) {
+        String msg = "Hello, " + Username + " your message was " + message;
+        //rabbitMQPublisher.sendMessage(msg);
+        return msg;
     }
 }

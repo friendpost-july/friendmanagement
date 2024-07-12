@@ -4,9 +4,11 @@ import com.friendpost.friends.friendmanagement.controller.exception.FriendReques
 import com.friendpost.friends.friendmanagement.controller.exception.InvalidStatusException;
 import com.friendpost.friends.friendmanagement.entity.Friends;
 import com.friendpost.friends.friendmanagement.entity.Friends.Userstatus;
+import com.friendpost.friends.friendmanagement.entity.UserTable;
 import com.friendpost.friends.friendmanagement.repository.FriendsRepository;
 import com.friendpost.friends.friendmanagement.repository.UserRepository;
 
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +21,13 @@ public class FriendsServiceImpl implements FriendsService{
 
     @Autowired
     FriendsRepository friendsRepository;
+
+    @RabbitListener(queues = "my-queue1")
+    public void receiveMessage(Object message) {
+        UserTable userTable = (UserTable) message;
+        userRepository.save(userTable);
+        System.out.println("Received from my-queue1: " + message.toString());
+    }
 
     @Autowired
     UserRepository userRepository;
@@ -41,6 +50,11 @@ public class FriendsServiceImpl implements FriendsService{
     @Override
     public List<Friends> getReceivedFriendRequests(String userId, Friends.Status status) {
         return friendsRepository.findByReceiverIdAndStatus(userId,status);
+    }
+
+    @Override
+    public List<Friends> getSentFriendRequests(String userId, Friends.Status status) {
+        return friendsRepository.findBySenderIdAndStatus(userId,status);
     }
 
     @Transactional

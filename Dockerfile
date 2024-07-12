@@ -10,3 +10,4 @@ COPY --from=builder /app-dev/build/libs/friendmanagement-0.0.1-SNAPSHOT.jar ./fr
 CMD ["java", "-jar", "friendmanagement-0.0.1.jar"]
 
 EXPOSE 19090
+

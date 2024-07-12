@@ -12,11 +12,13 @@ import java.util.Optional;
 public interface FriendsRepository extends JpaRepository<Friends, Long> {
     Friends save(Friends friends);
     List<Friends> findByReceiverIdAndStatus(String userId, Friends.Status status);
-
+    List<Friends> findBySenderIdAndStatus(String userId, Friends.Status status);
     @Query(value = "SELECT * FROM friends f WHERE (f.sender_id = :userId OR f.receiver_id = :userId) AND f.status = :status", nativeQuery = true)
     List<Friends> findBySenderIdAndStatusOrReceiverIdAndStatus(@Param("userId") String userId, @Param("status") String string);
 
     Optional<Friends> findBySenderIdAndReceiverId(String userId, String friendId);
 
     long deleteBySenderIdAndReceiverId(String userId, String friendId);
+
+
 }
